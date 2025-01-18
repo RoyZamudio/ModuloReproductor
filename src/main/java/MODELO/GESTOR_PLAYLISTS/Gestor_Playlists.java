@@ -12,18 +12,13 @@ import java.util.logging.Logger;
 public class Gestor_Playlists {
 
     private static final Logger LOGGER = Logger.getLogger(Gestor_Playlists.class.getName());
-    private final ConectorBD conectorBD;
 
-    public Gestor_Playlists() {
-        this.conectorBD = new ConectorBD();
-    }
-
-    // Obtener todas las playlists
     public List<Playlist> obtenerPlaylists(int idUsuario) {
         List<Playlist> playlists = new ArrayList<>();
-        String query = "SELECT * FROM playlist WHERE id_usuario = ?";
+        String query = "SELECT * FROM Playlist WHERE id_usuario = ?";
 
-        try (Connection conn = conectorBD.conectar();
+        try (ConectorBD conector = new ConectorBD();
+             Connection conn = conector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, idUsuario);
@@ -43,11 +38,11 @@ public class Gestor_Playlists {
         return playlists;
     }
 
-    // Crear una nueva playlist
     public boolean crearPlaylist(String nombre, int idUsuario) {
-        String query = "INSERT INTO playlist (nombre, fecha_creacion, id_usuario) VALUES (?, CURRENT_TIMESTAMP, ?)";
+        String query = "INSERT INTO Playlist (nombre, fecha_creacion, id_usuario) VALUES (?, CURRENT_TIMESTAMP, ?)";
 
-        try (Connection conn = conectorBD.conectar();
+        try (ConectorBD conector = new ConectorBD();
+             Connection conn = conector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, nombre);
@@ -60,11 +55,11 @@ public class Gestor_Playlists {
         return false;
     }
 
-    // Agregar una canción a una playlist
     public boolean agregarCancionAPlaylist(int idCancion, int idPlaylist) {
-        String query = "INSERT INTO cancionesplaylist (id_cancion, id_playlist) VALUES (?, ?)";
+        String query = "INSERT INTO CancionesPlaylist (id_cancion, id_playlist) VALUES (?, ?)";
 
-        try (Connection conn = conectorBD.conectar();
+        try (ConectorBD conector = new ConectorBD();
+             Connection conn = conector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, idCancion);
@@ -77,14 +72,14 @@ public class Gestor_Playlists {
         return false;
     }
 
-    // Obtener canciones de una playlist
     public List<Cancion> obtenerCancionesDePlaylist(int idPlaylist) {
         List<Cancion> canciones = new ArrayList<>();
-        String query = "SELECT c.* FROM canciones c " +
-                "INNER JOIN cancionesplaylist cp ON c.id_cancion = cp.id_cancion " +
+        String query = "SELECT c.* FROM Canciones c " +
+                "INNER JOIN CancionesPlaylist cp ON c.id_cancion = cp.id_cancion " +
                 "WHERE cp.id_playlist = ?";
 
-        try (Connection conn = conectorBD.conectar();
+        try (ConectorBD conector = new ConectorBD();
+             Connection conn = conector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, idPlaylist);
@@ -94,9 +89,9 @@ public class Gestor_Playlists {
                             rs.getInt("id_cancion"),
                             rs.getString("titulo"),
                             rs.getString("artista"),
-                            null, // Ajusta si necesitas incluir el álbum
+                            null,
                             rs.getString("url_archivo"),
-                            rs.getInt("duracion"), // La duración ya está en segundos
+                            rs.getInt("duracion"),
                             rs.getString("genero")
                     );
                     canciones.add(cancion);

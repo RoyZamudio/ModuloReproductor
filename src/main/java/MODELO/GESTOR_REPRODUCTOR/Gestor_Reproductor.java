@@ -1,27 +1,53 @@
 package MODELO.GESTOR_REPRODUCTOR;
 
+import SERVICIOS.ConectorBD;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Gestor_Reproductor {
-    private List<Cancion> listaCanciones; // Lista de canciones disponibles
-    private int indiceActual; // Índice de la canción actual en reproducción
-    private boolean reproduciendo; // Estado del reproductor
+    private List<Cancion> listaCanciones;
+    private int indiceActual;
+    private boolean reproduciendo;
 
-    // Constructor
     public Gestor_Reproductor() {
         this.listaCanciones = new ArrayList<>();
-        this.indiceActual = -1; // Inicialmente no hay canción seleccionada
+        this.indiceActual = -1;
         this.reproduciendo = false;
     }
 
-    // Cargar una lista de canciones
-    public void cargarCanciones(List<Cancion> canciones) {
-        this.listaCanciones = canciones;
-        this.indiceActual = !canciones.isEmpty() ? 0 : -1; // Selecciona la primera canción si hay canciones
+    public void cargarCancionesDesdeBD() {
+        String query = "SELECT c.id_cancion, c.titulo, a.nombre_artistico AS artista, al.titulo AS album, " +
+                "c.url_archivo, c.duracion, c.genero " +
+                "FROM Canciones c " +
+                "JOIN Artista a ON c.id_artista = a.id_artista " +
+                "LEFT JOIN Albumes al ON c.id_artista = al.id_artista";
+
+        try (ConectorBD conector = new ConectorBD();
+             Connection conn = conector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Cancion cancion = new Cancion(
+                        rs.getInt("id_cancion"),
+                        rs.getString("titulo"),
+                        rs.getString("artista"),
+                        rs.getString("album"),
+                        rs.getString("url_archivo"),
+                        rs.getInt("duracion"),
+                        rs.getString("genero")
+                );
+                listaCanciones.add(cancion);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    // Reproducir la canción actual y devolverla
     public Cancion reproducir() {
         if (indiceActual >= 0 && indiceActual < listaCanciones.size()) {
             reproduciendo = true;
@@ -30,12 +56,10 @@ public class Gestor_Reproductor {
         return null;
     }
 
-    // Pausar la reproducción
     public void pausar() {
         reproduciendo = false;
     }
 
-    // Reproducir la siguiente canción y devolverla
     public Cancion siguiente() {
         if (!listaCanciones.isEmpty()) {
             indiceActual = (indiceActual + 1) % listaCanciones.size();
@@ -45,7 +69,6 @@ public class Gestor_Reproductor {
         return null;
     }
 
-    // Reproducir la canción anterior y devolverla
     public Cancion anterior() {
         if (!listaCanciones.isEmpty()) {
             indiceActual = (indiceActual - 1 + listaCanciones.size()) % listaCanciones.size();
@@ -55,15 +78,13 @@ public class Gestor_Reproductor {
         return null;
     }
 
-    // Obtener la canción actual
     public Cancion obtenerCancionActual() {
         if (indiceActual >= 0 && indiceActual < listaCanciones.size()) {
             return listaCanciones.get(indiceActual);
         }
-        return null; // Si no hay canción seleccionada
+        return null;
     }
 
-    // Verificar si se está reproduciendo una canción
     public boolean estaReproduciendo() {
         return reproduciendo;
     }

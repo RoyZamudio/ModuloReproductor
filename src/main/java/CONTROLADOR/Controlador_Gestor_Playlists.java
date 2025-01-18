@@ -1,4 +1,3 @@
-// Clase actualizada para el controlador
 package CONTROLADOR;
 
 import MODELO.GESTOR_PLAYLISTS.*;
@@ -37,31 +36,24 @@ public class Controlador_Gestor_Playlists extends HttpServlet {
         String accion = request.getParameter("accion");
 
         try {
-            // Obtener ID de usuario desde la sesión (puedes ajustarlo según tu implementación)
             Integer idUsuario = (Integer) request.getSession().getAttribute("idUsuario");
+            if (idUsuario == null) throw new Exception("Usuario no autenticado.");
 
-            if (idUsuario == null) {
-                throw new Exception("Usuario no autenticado.");
+            switch (accion) {
+                case "crearPlaylist":
+                    crearPlaylist(request, idUsuario);
+                    break;
+                case "agregarCancion":
+                    agregarCancionAPlaylist(request);
+                    break;
+                case "verPlaylist":
+                    cargarCancionesDePlaylist(request);
+                    break;
+                default:
+                    request.setAttribute("error", "Acción no válida.");
+                    break;
             }
 
-            if (accion != null && !accion.isEmpty()) {
-                switch (accion) {
-                    case "crearPlaylist":
-                        crearPlaylist(request, idUsuario);
-                        break;
-                    case "agregarCancion":
-                        agregarCancionAPlaylist(request);
-                        break;
-                    case "verPlaylist":
-                        cargarCancionesDePlaylist(request);
-                        break;
-                    default:
-                        request.setAttribute("error", "Acción no válida.");
-                        break;
-                }
-            }
-
-            // Configurar datos para la vista
             List<Playlist> playlists = gestorPlaylists.obtenerPlaylists(idUsuario);
             request.setAttribute("playlists", playlists);
 
@@ -69,7 +61,6 @@ public class Controlador_Gestor_Playlists extends HttpServlet {
             request.setAttribute("error", "Error al procesar la solicitud: " + e.getMessage());
         }
 
-        // Redirigir a la vista de playlists
         request.getRequestDispatcher("/WEB-INF/IU_Gestor_Playlists.jsp").forward(request, response);
     }
 

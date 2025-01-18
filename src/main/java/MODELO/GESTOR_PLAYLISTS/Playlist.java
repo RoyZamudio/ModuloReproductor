@@ -7,10 +7,10 @@ import MODELO.GESTOR_REPRODUCTOR.Cancion;
 
 public class Playlist {
 
-    private int id_playlist; // Cambiado para coincidir con la base de datos
+    private int idPlaylist; // Consistente con la base de datos
     private String nombre;
-    private LocalDate fecha_creacion; // Consistencia con la base de datos
-    private int id_usuario; // Cambiado para coincidir con la base de datos
+    private LocalDate fechaCreacion; // Consistente con la base de datos
+    private int idUsuario; // Consistente con la base de datos
     private List<Cancion> canciones; // Lista de canciones en la playlist
 
     // Constructor vacío
@@ -19,30 +19,30 @@ public class Playlist {
     }
 
     // Constructor con parámetros básicos
-    public Playlist(int id_playlist, String nombre, LocalDate fecha_creacion, int id_usuario) {
-        this.id_playlist = id_playlist;
+    public Playlist(int idPlaylist, String nombre, LocalDate fechaCreacion, int idUsuario) {
+        this.idPlaylist = idPlaylist;
         this.nombre = nombre;
-        this.fecha_creacion = fecha_creacion;
-        this.id_usuario = id_usuario;
+        this.fechaCreacion = fechaCreacion;
+        this.idUsuario = idUsuario;
         this.canciones = new ArrayList<>();
     }
 
     // Constructor completo con lista de canciones
-    public Playlist(int id_playlist, String nombre, LocalDate fecha_creacion, int id_usuario, List<Cancion> canciones) {
-        this.id_playlist = id_playlist;
+    public Playlist(int idPlaylist, String nombre, LocalDate fechaCreacion, int idUsuario, List<Cancion> canciones) {
+        this.idPlaylist = idPlaylist;
         this.nombre = nombre;
-        this.fecha_creacion = fecha_creacion;
-        this.id_usuario = id_usuario;
+        this.fechaCreacion = fechaCreacion;
+        this.idUsuario = idUsuario;
         this.canciones = canciones != null ? canciones : new ArrayList<>();
     }
 
     // Métodos getters y setters
-    public int getId_playlist() {
-        return id_playlist;
+    public int getIdPlaylist() {
+        return idPlaylist;
     }
 
-    public void setId_playlist(int id_playlist) {
-        this.id_playlist = id_playlist;
+    public void setIdPlaylist(int idPlaylist) {
+        this.idPlaylist = idPlaylist;
     }
 
     public String getNombre() {
@@ -53,20 +53,20 @@ public class Playlist {
         this.nombre = nombre;
     }
 
-    public LocalDate getFecha_creacion() {
-        return fecha_creacion;
+    public LocalDate getFechaCreacion() {
+        return fechaCreacion;
     }
 
-    public void setFecha_creacion(LocalDate fecha_creacion) {
-        this.fecha_creacion = fecha_creacion;
+    public void setFechaCreacion(LocalDate fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 
-    public int getId_usuario() {
-        return id_usuario;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setId_usuario(int id_usuario) {
-        this.id_usuario = id_usuario;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public List<Cancion> getCanciones() {
@@ -94,10 +94,10 @@ public class Playlist {
     @Override
     public String toString() {
         return "Playlist{" +
-                "id_playlist=" + id_playlist +
+                "idPlaylist=" + idPlaylist +
                 ", nombre='" + nombre + '\'' +
-                ", fecha_creacion=" + fecha_creacion +
-                ", id_usuario=" + id_usuario +
+                ", fechaCreacion=" + fechaCreacion +
+                ", idUsuario=" + idUsuario +
                 ", canciones=" + canciones +
                 '}';
     }
